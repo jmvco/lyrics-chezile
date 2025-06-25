@@ -13,7 +13,7 @@ import os
 
 # Ruta segura para el archivo de audio
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-AUDIO_FILE = os.path.join(BASE_DIR, "music", "cheziile.wav")
+AUDIO_FILE = os.path.join(BASE_DIR, "assets", "cheziile.wav")
 
 pygame.mixer.init()
 

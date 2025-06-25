@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chezile - Beanie Karaoke</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Righteous&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Righteous', cursive;
+      background: linear-gradient(45deg, #ff0080, #8000ff, #0080ff, #00ff80, #ff8000);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .stage {
+      position: relative;
+      background: radial-gradient(circle, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.95) 100%);
+      border-radius: 30px;
+      padding: 3rem 2rem;
+      box-shadow: 
+        0 0 50px rgba(255, 0, 128, 0.5),
+        inset 0 0 50px rgba(255, 255, 255, 0.1);
+      text-align: center;
+      max-width: 800px;
+      width: 100%;
+      border: 3px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stage::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      background: linear-gradient(45deg, #ff0080, #8000ff, #0080ff, #00ff80, #ff8000);
+      border-radius: 33px;
+      z-index: -1;
+      animation: borderGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes borderGlow {
+      0% { filter: blur(5px) brightness(1); }
+      100% { filter: blur(10px) brightness(1.5); }
+    }
+
+    .spotlight {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 100px;
+      background: radial-gradient(ellipse, rgba(255, 255, 0, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: spotlightSway 4s ease-in-out infinite;
+    }
+
+    @keyframes spotlightSway {
+      0%, 100% { transform: translateX(-50%) rotate(-5deg); }
+      50% { transform: translateX(-50%) rotate(5deg); }
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(45deg, #ff0080, #ffff00, #00ff80, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      animation: titlePulse 2s ease-in-out infinite;
+      position: relative;
+    }
+
+    @keyframes titlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .mic-icon {
+      display: inline-block;
+      font-size: 2rem;
+      margin: 0 1rem;
+      animation: micBounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes micBounce {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    .audio-container {
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    audio {
+      width: 100%;
+      height: 60px;
+      border-radius: 30px;
+      filter: drop-shadow(0 0 20px rgba(255, 0, 128, 0.8));
+      background: linear-gradient(45deg, #ff0080, #8000ff);
+    }
+
+    audio::-webkit-media-controls-panel {
+      background: linear-gradient(45deg, #ff0080, #8000ff);
+      border-radius: 30px;
+    }
+
+    .equalizer {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 1rem;
+    }
+
+    .bar {
+      width: 6px;
+      background: linear-gradient(to top, #ff0080, #ffff00);
+      border-radius: 3px;
+      animation: equalizer 1s ease-in-out infinite;
+    }
+
+    .bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+    .bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+    .bar:nth-child(3) { height: 50px; animation-delay: 0.2s; }
+    .bar:nth-child(4) { height: 25px; animation-delay: 0.3s; }
+    .bar:nth-child(5) { height: 40px; animation-delay: 0.4s; }
+    .bar:nth-child(6) { height: 30px; animation-delay: 0.5s; }
+    .bar:nth-child(7) { height: 45px; animation-delay: 0.6s; }
+    .bar:nth-child(8) { height: 20px; animation-delay: 0.7s; }
+
+    @keyframes equalizer {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.7; }
+      50% { transform: scaleY(1.2); opacity: 1; }
+    }
+
+    #lyrics {
+      font-family: 'Fredoka One', cursive;
+      font-size: 3.2rem;
+      font-weight: 400;
+      line-height: 1.3;
+      min-height: 2.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 1.5rem;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(15px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .lyric-text {
+      background: linear-gradient(90deg, 
+        #ff0080 0%, 
+        #ff0080 var(--progress, 0%), 
+        #ffffff var(--progress, 0%), 
+        #ffffff 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 20px rgba(255, 0, 128, 0.8);
+      transition: all 0.3s ease;
+      display: inline-block;
+      animation: textGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes textGlow {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 0, 128, 0.8)); }
+      50% { filter: drop-shadow(0 0 20px rgba(255, 0, 128, 1)); }
+    }
+
+    .lyrics-show {
+      animation: lyricsEnter 0.5s ease-out;
+    }
+
+    @keyframes lyricsEnter {
+      0% {
+        transform: scale(0.8) translateY(20px);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .note {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0;
+      animation: floatingNotes 3s ease-in-out infinite;
+      color: #ffff00;
+      text-shadow: 0 0 10px #ffff00;
+    }
+
+    @keyframes floatingNotes {
+      0% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .note:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .note:nth-child(2) { left: 90%; animation-delay: 1s; }
+    .note:nth-child(3) { left: 30%; animation-delay: 2s; }
+    .note:nth-child(4) { left: 70%; animation-delay: 1.5s; }
+
+    .disco-ball {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, #silver 30%, #white 70%);
+      border-radius: 50%;
+      animation: discoBallSpin 4s linear infinite;
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.8),
+        inset 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes discoBallSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      color: #ffff00;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    .star:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+    .star:nth-child(2) { top: 20%; left: 80%; animation-delay: 0.5s; }
+    .star:nth-child(3) { top: 70%; left: 10%; animation-delay: 1s; }
+    .star:nth-child(4) { top: 80%; left: 85%; animation-delay: 1.5s; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .control-hint {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      animation: hintFade 3s ease-in-out infinite;
+    }
+
+    @keyframes hintFade {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    .progress-indicator {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ff0080, #00ff80);
+      width: 0%;
+      transition: width 0.1s ease;
+      border-radius: 2px;
+    }
+
+    .upcoming-lyric {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.5);
+      font-family: 'Righteous', cursive;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      #lyrics { 
+        font-size: 2.5rem; 
+        min-height: 2em;
+        padding: 1rem;
+      }
+      .stage { padding: 2rem 1rem; }
+      .control-hint { font-size: 0.8rem; bottom: 5px; }
+      .progress-indicator { width: 150px; }
+      .upcoming-lyric { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="spotlight"></div>
+    <div class="disco-ball"></div>
+    
+    <div class="stars">
+      <div class="star">⭐</div>
+      <div class="star">✨</div>
+      <div class="star">🌟</div>
+      <div class="star">💫</div>
+    </div>
+
+    <div class="note">🎵</div>
+    <div class="note">🎶</div>
+    <div class="note">♪</div>
+    <div class="note">♫</div>
+
+    <h1>
+      <span class="mic-icon">🎤</span>
+      Chezile - Beanie
+      <span class="mic-icon">🎤</span>
+    </h1>
+    
+    <div class="audio-container">
+      <audio id="audio" controls src="assets/cheziile.wav"></audio>
+      <div class="equalizer">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+    </div>
+    
+    <div id="lyrics">
+      <span class="lyric-text">🎵 Ready to sing? 🎵</span>
+    </div>
+
+    <div class="progress-indicator">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="upcoming-lyric" id="upcomingLyric"></div>
+
+    <div class="control-hint">
+      ⌨️ Space: Play/Pause | ← → : Skip 5s | Click timeline to jump
+    </div>
+  </div>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const lyricsContainer = document.getElementById('lyrics');
+    const progressBar = document.getElementById('progressBar');
+    const upcomingLyric = document.getElementById('upcomingLyric');
+
+    const lyrics = [
+      { time: 0, text: "🎵 Ready to sing? 🎵" },
+      { time: 18.5, text: "Hear it" },
+      { time: 19.8, text: "in your tone" },
+      { time: 23.2, text: "You're slowly" },
+      { time: 25.1, text: "letting go" },
+      { time: 28.5, text: "Are you turning off" },
+      { time: 30.8, text: "your phone?" },
+      { time: 33.0, text: "(ooh)" },
+      { time: 34.8, text: "Feelings" },
+      { time: 36.2, text: "turn cold" },
+      { time: 38.5, text: "So cold" },
+      { time: 40.2, text: "for you" },
+      { time: 48.8, text: "So cold" },
+      { time: 50.5, text: "for you" },
+      { time: 61.5, text: "Oh, I try" },
+      { time: 63.8, text: "to break apart" },
+      { time: 66.2, text: "oh-woah" },
+      { time: 68.0, text: "You don't wanna" },
+      { time: 69.8, text: "try no more" },
+      { time: 71.5, text: "oh, no more" },
+      { time: 73.2, text: "Why, why (oh)" },
+      { time: 75.0, text: "do you live" },
+      { time: 76.8, text: "in my mind" },
+      { time: 78.5, text: "mind? Oh" },
+      { time: 80.2, text: "Said you looked" },
+      { time: 82.0, text: "past my love" },
+      { time: 84.5, text: "While I came" },
+      { time: 86.2, text: "with open arms" },
+      { time: 88.8, text: "For you" },
+      { time: 92.0, text: "For you" },
+      { time: 95.0, text: "🎵 Amazing! 🎵" }
+    ];
+
+    let currentLyricIndex = 0;
+    let currentFillAnimation = null;
+    let lastUpdateTime = 0;
+    let isPlaying = false;
+
+    function findCurrentLyricIndex(currentTime) {
+      // Find the appropriate lyric for current time
+      for (let i = lyrics.length - 1; i >= 0; i--) {
+        if (currentTime >= lyrics[i].time) {
+          return i;
+        }
+      }
+      return 0;
+    }
+
+    function updateLyrics() {
+      const currentTime = audio.currentTime;
+      const newIndex = findCurrentLyricIndex(currentTime);
+      
+      // Update progress bar
+      if (audio.duration) {
+        const progress = (currentTime / audio.duration) * 100;
+        progressBar.style.width = progress + '%';
+      }
+      
+      // Show upcoming lyric preview
+      showUpcomingLyric(newIndex + 1);
+      
+      // Only update if we're at a different lyric or if we seeked
+      if (newIndex !== currentLyricIndex || Math.abs(currentTime - lastUpdateTime) > 0.5) {
+        currentLyricIndex = newIndex;
+        
+        // Clear any existing animation
+        if (currentFillAnimation) {
+          clearInterval(currentFillAnimation);
+          currentFillAnimation = null;
+        }
+        
+        // Update the lyric display
+        displayLyric(currentLyricIndex, currentTime);
+      }
+      
+      lastUpdateTime = currentTime;
+    }
+
+    function showUpcomingLyric(nextIndex) {
+      if (nextIndex < lyrics.length && isPlaying) {
+        const nextLyric = lyrics[nextIndex];
+        const timeUntilNext = nextLyric.time - audio.currentTime;
+        
+        if (timeUntilNext > 0 && timeUntilNext <= 3) {
+          upcomingLyric.textContent = `Next: ${nextLyric.text}`;
+          upcomingLyric.classList.add('show');
+        } else {
+          upcomingLyric.classList.remove('show');
+        }
+      } else {
+        upcomingLyric.classList.remove('show');
+      }
+    }
+
+    function displayLyric(index, currentTime) {
+      if (index >= lyrics.length) return;
+      
+      const lyric = lyrics[index];
+      
+      // Clear and create new lyric element
+      lyricsContainer.innerHTML = '';
+      const span = document.createElement('span');
+      span.className = 'lyric-text lyrics-show';
+      span.textContent = lyric.text;
+      lyricsContainer.appendChild(span);
+      
+      // Calculate how much time has passed since this lyric started
+      const timeElapsed = currentTime - lyric.time;
+      
+      // Calculate total duration for this lyric
+      let totalDuration;
+      if (index < lyrics.length - 1) {
+        totalDuration = lyrics[index + 1].time - lyric.time;
+      } else {
+        totalDuration = 4; // Default for last lyric
+      }
+      
+      // Calculate initial progress based on elapsed time
+      const initialProgress = Math.min((timeElapsed / (totalDuration * 0.8)) * 100, 100);
+      span.style.setProperty('--progress', initialProgress + '%');
+      
+      // Continue animation if not complete and audio is playing
+      if (initialProgress < 100 && isPlaying) {
+        animateTextFill(span, totalDuration - timeElapsed, initialProgress);
+      }
+    }
+
+    function animateTextFill(element, remainingDuration, startProgress = 0) {
+      if (currentFillAnimation) {
+        clearInterval(currentFillAnimation);
+      }
+      
+      let progress = startProgress;
+      const targetDuration = Math.max(remainingDuration * 0.8, 0.5);
+      const increment = (100 - startProgress) / (targetDuration * 20);
+      
+      currentFillAnimation = setInterval(() => {
+        if (!isPlaying) {
+          clearInterval(currentFillAnimation);
+          currentFillAnimation = null;
+          return;
+        }
+        
+        progress += increment;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(currentFillAnimation);
+          currentFillAnimation = null;
+        }
+        element.style.setProperty('--progress', progress + '%');
+      }, 1000 / 20);
+    }
+
+    function animateEqualizer() {
+      const bars = document.querySelectorAll('.bar');
+      bars.forEach((bar, index) => {
+        if (isPlaying) {
+          bar.style.animationPlayState = 'running';
+          // Add some randomness to make it more dynamic
+          bar.style.animationDelay = (index * 0.1) + 's';
+        } else {
+          bar.style.animationPlayState = 'paused';
+        }
+      });
+    }
+
+    function resetKaraoke() {
+      currentLyricIndex = 0;
+      lastUpdateTime = 0;
+      if (currentFillAnimation) {
+        clearInterval(currentFillAnimation);
+        currentFillAnimation = null;
+      }
+      lyricsContainer.innerHTML = '<span class="lyric-text">🎵 Ready to sing? 🎵</span>';
+    }
+
+    // Enhanced event listeners
+    audio.addEventListener('timeupdate', updateLyrics);
+    
+    audio.addEventListener('play', () => {
+      isPlaying = true;
+      animateEqualizer();
+      updateLyrics(); // Immediate update when playing
+    });
+
+    audio.addEventListener('pause', () => {
+      isPlaying = false;
+      animateEqualizer();
+      if (currentFillAnimation) {
+        clearInterval(currentFillAnimation);
+        currentFillAnimation = null;
+      }
+    });
+
+    audio.addEventListener('seeked', () => {
+      // Force update when user seeks
+      updateLyrics();
+    });
+
+    audio.addEventListener('ended', () => {
+      isPlaying = false;
+      currentLyricIndex = lyrics.length - 1;
+      lyricsContainer.innerHTML = '<span class="lyric-text">🎵 Fantastic performance! 🎵</span>';
+      animateEqualizer();
+    });
+
+    audio.addEventListener('loadstart', resetKaraoke);
+
+    // Keyboard shortcuts for better UX
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && e.target === document.body) {
+        e.preventDefault();
+        if (audio.paused) {
+          audio.play();
+        } else {
+          audio.pause();
+        }
+      }
+      
+      if (e.code === 'ArrowLeft' && e.target === document.body) {
+        e.preventDefault();
+        audio.currentTime = Math.max(0, audio.currentTime - 5);
+      }
+      
+      if (e.code === 'ArrowRight' && e.target === document.body) {
+        e.preventDefault();
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+      }
+    });
+
+    // Initialize
+    resetKaraoke();
+    animateEqualizer();
+  </script>
+</body>
+</html>
